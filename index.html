@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#11101c">
+  <meta name="description" content="Jelajahi anime pilihan dan temukan tontonan yang sesuai dengan mood-mu di FlipPlay.">
+  <title>FlipPlay — Temukan Vibe Tontonanmu</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f5ff;
+      --muted: #a7a4b8;
+      --panel: #1b1929;
+      --line: rgba(255, 255, 255, .09);
+      --page: #11101c;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .hidden { display: none !important; }
+    .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+
+    .topbar {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 16, 28, .84);
+      backdrop-filter: blur(18px);
+    }
+    .nav-row { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-size: 21px; font-weight: 850; letter-spacing: -.7px; }
+    .brand-mark {
+      display: grid; width: 38px; height: 38px; place-items: center; border-radius: 13px;
+      color: white; font-size: 17px; background: linear-gradient(140deg, #8b5cf6, #ec4899);
+      box-shadow: 0 7px 25px rgba(168, 85, 247, .32);
+    }
+    .brand-name span { color: #f0abfc; }
+    .nav-links { display: flex; align-items: center; gap: 30px; color: #c3bfd1; font-size: 13px; font-weight: 650; }
+    .nav-links a { transition: color .2s ease; }
+    .nav-links a:hover, .nav-links a.active { color: white; }
+    .nav-cta { padding: 10px 15px; border: 1px solid var(--line); border-radius: 999px; color: white !important; }
+
+    .hero {
+      position: relative; overflow: hidden; min-height: 390px; display: flex; align-items: center;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(ellipse at 82% 45%, rgba(168, 85, 247, .25), transparent 34%),
+        radial-gradient(ellipse at 68% 100%, rgba(236, 72, 153, .13), transparent 35%),
+        #151322;
+    }
+    .hero-inner { position: relative; z-index: 1; padding-block: 62px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; margin: 0 0 17px; color: #d6bcff;
+      font-size: 10px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #d8b4fe; box-shadow: 0 0 12px #c084fc; }
+    .hero h1 { max-width: 700px; margin: 0; font-size: clamp(42px, 6vw, 68px); line-height: 1.04; letter-spacing: -3.4px; }
+    .hero h1 span { color: transparent; background: linear-gradient(90deg, #c4b5fd, #f0abfc); background-clip: text; }
+    .hero-copy { max-width: 530px; margin: 18px 0 26px; color: #b6b2c5; font-size: 14px; line-height: 1.8; }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 15px; }
+    .primary-link {
+      display: inline-flex; align-items: center; gap: 9px; padding: 12px 18px; border-radius: 12px;
+      color: white; font-size: 12px; font-weight: 750; background: linear-gradient(110deg, #8b5cf6, #c026d3);
+      box-shadow: 0 8px 26px rgba(147, 51, 234, .28); transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .primary-link:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(147, 51, 234, .4); }
+    .hero-note { color: #aaa6b9; font-size: 11px; }
+    .hero-orb { position: absolute; right: 10%; top: 50%; width: 245px; aspect-ratio: 1; border-radius: 50%; transform: translateY(-50%); background: linear-gradient(140deg, rgba(196,181,253,.12), rgba(236,72,153,.08)); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 0 80px rgba(147,51,234,.1), inset 0 0 50px rgba(255,255,255,.035); }
+    .hero-orb::before, .hero-orb::after { content: ""; position: absolute; border: 1px solid rgba(255,255,255,.1); border-radius: 50%; inset: 18px; }
+    .hero-orb::after { inset: 38px; }
+    .orb-icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 72px; filter: drop-shadow(0 10px 25px rgba(240,171,252,.38)); }
+
+    .catalog { padding-block: 58px 76px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 25px; }
+    .section-heading .eyebrow { margin-bottom: 9px; }
+    .section-heading h2 { margin: 0; font-size: clamp(26px, 4vw, 34px); letter-spacing: -1.3px; }
+    .section-heading p { max-width: 480px; margin: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .catalog-count { flex: 0 0 auto; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; color: #c4bdd5; font-size: 10px; }
+    .filters {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+      padding: 14px; margin-bottom: 24px; border: 1px solid var(--line); border-radius: 16px;
+      background: linear-gradient(135deg, rgba(31,29,46,.96), rgba(25,23,38,.96));
+    }
+    .search-wrap { position: relative; flex: 1 1 280px; max-width: 390px; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8f8aa2; font-size: 17px; pointer-events: none; }
+    .search-input {
+      width: 100%; padding: 12px 14px 12px 42px; outline: 0; border: 1px solid rgba(255,255,255,.09);
+      border-radius: 11px; color: white; font-size: 11px; background: #141320; transition: border-color .2s, box-shadow .2s;
+    }
+    .search-input::placeholder { color: #777387; }
+    .search-input:focus { border-color: #9b75e8; box-shadow: 0 0 0 3px rgba(167,139,250,.13); }
+    .aura-container { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+    .aura-label { margin-right: 4px; color: #89859a; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    .aura-btn {
+      padding: 9px 12px; cursor: pointer; border: 1px solid transparent; border-radius: 9px;
+      color: #aaa6b9; font-size: 10px; font-weight: 650; background: transparent; transition: all .2s ease;
+    }
+    .aura-btn:hover { color: white; background: rgba(255,255,255,.06); }
+    .aura-btn.bg-blue-600 { color: #f4eaff; border-color: rgba(192,132,252,.26); background: rgba(147,51,234,.2); }
+
+    .vibe-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+    .media-link { display: block; min-width: 0; height: 100%; outline: 0; border-radius: 15px; }
+    .media-link:focus-visible { box-shadow: 0 0 0 3px #c4b5fd; }
+    .media-card { height: 100%; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: #1b1929; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+    .media-link:hover .media-card { transform: translateY(-5px); border-color: rgba(196,181,253,.35); box-shadow: 0 16px 35px rgba(0,0,0,.24); }
+    .media-poster { position: relative; height: 250px; overflow: hidden; background: linear-gradient(145deg, #29243b, #171521); }
+    .media-poster img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .media-link:hover .media-poster img { transform: scale(1.055); }
+    .poster-shade { position: absolute; inset: 35% 0 0; pointer-events: none; background: linear-gradient(transparent, rgba(17,16,28,.76)); }
+    .score-badge { position: absolute; top: 11px; right: 11px; padding: 6px 9px; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; color: #fff1b8; font-size: 10px; font-weight: 800; background: rgba(17,16,28,.78); backdrop-filter: blur(8px); }
+    .media-meta { position: absolute; right: 11px; bottom: 11px; left: 11px; display: flex; justify-content: space-between; gap: 8px; color: #f1eefa; font-size: 9px; font-weight: 700; }
+    .media-type { padding: 5px 7px; border-radius: 6px; background: rgba(17,16,28,.7); }
+    .media-body { padding: 14px 14px 16px; }
+    .media-title { overflow: hidden; margin: 0 0 9px; color: #f5f2fb; font-size: 13px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .genre-list { display: flex; gap: 6px; margin-bottom: 10px; }
+    .genre-tag { padding: 4px 7px; border: 1px solid rgba(196,181,253,.15); border-radius: 6px; color: #c8b7f4; font-size: 9px; font-weight: 700; background: rgba(139,92,246,.1); }
+    .media-description { display: -webkit-box; overflow: hidden; min-height: 52px; margin: 0; color: #a5a1b3; font-size: 10px; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+    .loading-state, .error-state, .empty-state { padding: 48px 20px; border: 1px solid var(--line); border-radius: 16px; text-align: center; background: var(--panel); }
+    .loading-spinner { width: 35px; height: 35px; margin: 0 auto 15px; border: 3px solid rgba(196,181,253,.2); border-top-color: #c4b5fd; border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-title { margin: 0 0 7px; font-size: 15px; }
+    .state-copy { margin: 0; color: var(--muted); font-size: 11px; }
+    .retry-btn { margin-top: 16px; padding: 10px 15px; cursor: pointer; border: 0; border-radius: 9px; color: white; font-size: 11px; font-weight: 700; background: #7c3aed; }
+
+    .contact-section { padding-block: 56px 62px; border-top: 1px solid var(--line); background: #151421; }
+    .contact-layout { display: grid; grid-template-columns: .85fr 1.15fr; align-items: center; gap: 60px; }
+    .contact-copy h2 { margin: 0 0 12px; font-size: 29px; letter-spacing: -1px; }
+    .contact-copy p { max-width: 390px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; padding: 20px; border: 1px solid var(--line); border-radius: 15px; background: #1b1929; }
+    .form-field { display: grid; gap: 7px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label { color: #d0ccdb; font-size: 10px; font-weight: 700; }
+    .form-field input, .form-field textarea { width: 100%; padding: 11px 12px; outline: 0; border: 1px solid rgba(255,255,255,.09); border-radius: 9px; color: white; font-size: 11px; background: #141320; }
+    .form-field textarea { min-height: 85px; resize: vertical; }
+    .form-field input:focus, .form-field textarea:focus { border-color: #9b75e8; }
+    .submit-btn { grid-column: 1 / -1; padding: 11px; cursor: pointer; border: 0; border-radius: 9px; color: white; font-size: 11px; font-weight: 750; background: linear-gradient(100deg, #8b5cf6, #c026d3); }
+    .footer { padding: 20px 0; border-top: 1px solid var(--line); color: #797589; font-size: 9px; }
+    .footer-row { display: flex; justify-content: space-between; gap: 16px; }
+    .footer strong { color: #c5bfd3; }
+
+    @media (max-width: 950px) {
+      .vibe-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .hero-orb { right: 5%; width: 200px; opacity: .8; }
+    }
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 32px, 540px); }
+      .nav-row { min-height: 66px; }
+      .nav-links { gap: 14px; font-size: 11px; }
+      .nav-cta { display: none; }
+      .hero { min-height: 350px; }
+      .hero-inner { padding-block: 52px; }
+      .hero h1 { max-width: 470px; font-size: clamp(42px, 12vw, 58px); letter-spacing: -2.6px; }
+      .hero-copy { max-width: 400px; font-size: 12px; }
+      .hero-orb { right: -80px; width: 180px; opacity: .42; }
+      .catalog { padding-block: 44px 55px; }
+      .section-heading { align-items: start; }
+      .catalog-count { display: none; }
+      .filters { align-items: stretch; }
+      .search-wrap { max-width: none; }
+      .aura-container { gap: 4px; }
+      .aura-label { flex-basis: 100%; margin-bottom: 3px; }
+      .vibe-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .media-poster { height: 215px; }
+      .media-body { padding: 12px; }
+      .media-title { font-size: 11px; }
+      .contact-layout { grid-template-columns: 1fr; gap: 24px; }
+      .contact-copy h2 { font-size: 25px; }
+      .footer-row { flex-direction: column; }
+    }
+    @media (max-width: 390px) {
+      .brand { font-size: 18px; }
+      .nav-links { gap: 10px; font-size: 10px; }
+      .vibe-grid { grid-template-columns: 1fr; }
+      .media-poster { height: 290px; }
+      .contact-form { grid-template-columns: 1fr; }
+      .form-field.full, .submit-btn { grid-column: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell nav-row">
+      <a class="brand" href="#hero" aria-label="FlipPlay, ke beranda">
+        <span class="brand-mark" aria-hidden="true">▶</span>
+        <span class="brand-name">Flip<span>Play</span></span>
+      </a>
+      <nav class="nav-links" aria-label="Navigasi utama">
+        <a class="active" href="#hero">Beranda</a>
+        <a href="#vibe-grid-section">Jelajahi</a>
+        <a class="nav-cta" href="#kontak">Hubungi kami ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="shell hero-inner">
+        <p class="eyebrow">Your next watch starts here</p>
+        <h1>Temukan cerita,<br><span>rasakan vibemu.</span></h1>
+        <p class="hero-copy">Lagi butuh tontonan penuh aksi atau cerita yang bikin mellow? Temukan anime yang pas dengan suasana hatimu di FlipPlay.</p>
+        <div class="hero-actions">
+          <a class="primary-link" href="#vibe-grid-section">Jelajahi koleksi <span aria-hidden="true">↘</span></a>
+          <span class="hero-note">Pilihan seru, tinggal satu klik.</span>
+        </div>
+      </div>
+      <div class="hero-orb" aria-hidden="true"><div class="orb-icon">✦</div></div>
+    </section>
+
+    <section class="shell catalog" id="vibe-grid-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Curated for your mood</p>
+          <h2>The Vibe Grid</h2>
+          <p>Temukan anime pilihan berdasarkan aura, atau cari judul favoritmu secara langsung.</p>
+        </div>
+        <span class="catalog-count">✦ &nbsp;Koleksi pilihan</span>
+      </div>
+
+      <div class="filters">
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <label for="search-input" class="hidden">Cari judul anime</label>
+          <input class="search-input" type="search" id="search-input" placeholder="Cari anime favoritmu..." autocomplete="off">
+        </div>
+        <div class="aura-container" id="aura-container" aria-label="Filter berdasarkan aura">
+          <span class="aura-label">Pilih aura</span>
+          <button type="button" data-aura="ALL" class="aura-btn bg-blue-600 text-white shadow-sm" aria-pressed="true">Semua</button>
+          <button type="button" data-aura="HIGH_ENERGY" class="aura-btn" aria-pressed="false">⚡ Enerjik</button>
+          <button type="button" data-aura="MELANCHOLY" class="aura-btn" aria-pressed="false">🌧️ Melankolis</button>
+          <button type="button" data-aura="BINGE_MODE" class="aura-btn" aria-pressed="false">🍿 Maraton</button>
+        </div>
+      </div>
+
+      <div id="loading-state" class="loading-state" role="status">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p class="state-title">Menyiapkan pilihan untukmu...</p>
+        <p class="state-copy">Sedang mengambil koleksi anime terbaru.</p>
+      </div>
+      <div id="error-state" class="error-state hidden" role="alert">
+        <p class="state-title">Oops, koneksi sedang bermasalah</p>
+        <p id="error-message" class="state-copy">Gagal mengambil data dari server.</p>
+        <button id="retry-btn" class="retry-btn" type="button">Coba lagi</button>
+      </div>
+      <div id="vibe-grid" class="vibe-grid" aria-live="polite"></div>
+    </section>
+
+    <section id="kontak" class="contact-section">
+      <div class="shell contact-layout">
+        <div class="contact-copy">
+          <p class="eyebrow">Say hello</p>
+          <h2>Punya saran tontonan?</h2>
+          <p>Kirim pesan atau rekomendasimu. Kami selalu senang menemukan cerita baru untuk dibagikan.</p>
+        </div>
+        <form id="contact-form" class="contact-form">
+          <div class="form-field">
+            <label for="nama">Nama</label>
+            <input type="text" id="nama" name="nama" placeholder="Nama kamu" required>
+          </div>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="nama@email.com" required>
+          </div>
+          <div class="form-field full">
+            <label for="pesan">Pesan</label>
+            <textarea id="pesan" name="pesan" placeholder="Ceritakan anime favoritmu..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Kirim pesan &nbsp;→</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-row">
+      <span><strong>FlipPlay</strong> — Temukan vibe tontonanmu.</span>
+      <span>&copy; 2026 FlipPlay · Pemrograman Web Modul 2 Praktikum UMM</span>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
